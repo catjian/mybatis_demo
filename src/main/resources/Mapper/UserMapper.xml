@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mybatistest.UserMapper">
+    <select id="selectAll" resultType="User">
+        SELECT * FROM userinfo;
+    </select>
+
+    <select id="selectUserByName"  resultType="User" parameterType="User">
+        SELECT * FROM userinfo WHERE username = #{username};
+    </select>
+
+    <insert id="insertUserInfo" parameterType="User">
+        INSERT INTO userinfo(username, phone, address, sex, email, password, createDate)
+        VALUES (#{username}, #{phone}, #{address}, #{sex}, #{email}, #{password}, NOW())
+    </insert>
+
+    <delete id="deleteUserInfo" parameterType="User">
+        DELETE FROM userinfo WHERE username = #{username}
+    </delete>
+
+    <update id="updataUserInfo" parameterType="User">
+        UPDATE userinfo SET
+        phone = #{phone},
+        createDate = NOW()
+        WHERE username = #{username}
+    </update>
+</mapper>
