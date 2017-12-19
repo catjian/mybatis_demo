@@ -6,8 +6,11 @@ import com.mybatistest.domain.User;
 import com.mybatistest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sun.rmi.runtime.Log;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -107,4 +110,41 @@ public class UserController extends BaseController{
         }
         return jsonResult;
     }
+
+    @PostMapping(value = "/uploadFile")
+    public @ResponseBody JsonResult uploadFile(@RequestParam(value = "file") MultipartFile file) {
+        JsonResult jsonResult = new JsonResult();
+        try {
+            if (file.isEmpty()) {
+                jsonResult.setFailure("file is null");
+                return jsonResult;
+            }
+
+            String fileName = file.getOriginalFilename();
+            logger.info(fileName);
+
+            String suffixName = fileName.substring(fileName.lastIndexOf('.'));
+            logger.info(suffixName);
+
+            String filePath = "/Users/jianzhang/IdeaProjects/UploadFile/";
+            String path = filePath + fileName;
+
+            File fileManager = new File(path);
+            if (!fileManager.getParentFile().exists()) {
+                fileManager.getParentFile().mkdirs();
+            }
+            file.transferTo(fileManager);
+            jsonResult.setSuccessful();
+        }
+        catch (IllegalStateException e) {
+            logger.error(e.getMessage(), e);
+            jsonResult.setFailure();
+        }
+        catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            jsonResult.setFailure();
+        }
+        return jsonResult;
+    }
+
 }
